@@ -78,7 +78,23 @@ resource "null_resource" "copy_ssh_key" {
   }
   provisioner "remote-exec" {
     inline = [
+      "#!/bin/bash",
+      #install amazon ansible-ec2 plugin
+      "ansible-galaxy collection install amazon.aws",
+      # # install ansible with python3
+      "sudo yum update -y",
+      "sudo amazon-linux-extras install python3.8 -y",
+      "sudo pip3.8 install ansible",
+      # #install boto3 and botocore
+      "sudo pip3.8 install boto3 botocore awscli",
+      #change terminal color
       "chmod 400 /home/ec2-user/${var.keypair-name}.pem",
+      "sudo sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config",
+      "sudo systemctl restart sshd",
+      "sudo useradd ansible",
+      "echo 'ansible:ansible' | sudo chpasswd",
+      "sudo cp /home/ec2-user/${var.keypair-name}.pem /home/ansible/${var.keypair-name}.pem",
+      "sudo chmod 400 /home/ansible/${var.keypair-name}.pem",
     ]
   }
 }

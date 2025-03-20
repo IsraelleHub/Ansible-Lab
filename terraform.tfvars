@@ -7,6 +7,7 @@ instance_configurations = {
     user_data     = "install.sh"
     ami           = "amazon"
   },
+  
   "node1" = {
     instance_type = "t3.micro"
     name          = "node1-instance"
@@ -19,6 +20,7 @@ instance_configurations = {
     user_data     = ""
     ami           = "ubuntu"
   }
+  
 }
 
 
