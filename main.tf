@@ -95,6 +95,8 @@ resource "null_resource" "copy_ssh_key" {
       "echo 'ansible:ansible' | sudo chpasswd",
       "sudo cp /home/ec2-user/${var.keypair-name}.pem /home/ansible/${var.keypair-name}.pem",
       "sudo chmod 400 /home/ansible/${var.keypair-name}.pem",
+      "sudo chown ansible:ansible /home/ansible/${var.keypair-name}.pem",
+       
     ]
   }
 }
