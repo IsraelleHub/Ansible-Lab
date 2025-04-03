@@ -37,4 +37,4 @@ windows_server_config = {
   Env           = "prod"
 }
 
-create_windows_server = true # Set to false to exclude Windows server
+create_windows_server = false # Set to false to exclude Windows server
