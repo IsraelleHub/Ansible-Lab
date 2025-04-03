@@ -6,24 +6,35 @@ instance_configurations = {
     name          = "master-instance"
     user_data     = "install.sh"
     ami           = "amazon"
+    Env           = "master-dev"
   },
-  
+
   "node1" = {
     instance_type = "t3.micro"
     name          = "node1-instance"
     user_data     = ""
     ami           = "amazon"
+    Env           = "dev"
   },
   "node2" = {
     instance_type = "t4g.micro"
     name          = "node2-instance"
     user_data     = ""
     ami           = "ubuntu"
+    Env           = "qa"
   }
-  
+
 }
 
 
-region = "us-east-1"
 
-keypair-name= "ansible-key"
+region       = "us-east-1"
+keypair-name = "ansiblekey"
+
+windows_server_config = {
+  name          = "win2022-server"
+  instance_type = "t2.medium"
+  Env           = "prod"
+}
+
+create_windows_server = true # Set to false to exclude Windows server
