@@ -20,7 +20,4 @@ variable "instance_configurations" {
     user_data     = string
     ami           = string
   }))
-
-  
 }
-

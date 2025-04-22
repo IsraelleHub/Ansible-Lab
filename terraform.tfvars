@@ -15,7 +15,7 @@ instance_configurations = {
     ami           = "amazon"
   },
   "node2" = {
-    instance_type = "t4g.micro"
+    instance_type = "t3.micro"
     name          = "node2-instance"
     user_data     = ""
     ami           = "ubuntu"

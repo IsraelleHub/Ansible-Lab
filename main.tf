@@ -49,17 +49,25 @@ module "ec2_instance" {
 
   name = each.value.name
 
-  ami                    = each.value.ami != "" ? (each.value.ami == "debian" ? data.aws_ami.debian.id : each.value.ami == "ubuntu"   ? data.aws_ami.ubuntu.id : data.aws_ami.amazon-2.id) : data.aws_ami.amazon-2.id
+  ami                    = each.value.ami != "" ? (each.value.ami == "debian" ? data.aws_ami.debian.id : each.value.ami == "ubuntu"   ? data.aws_ami.ubuntu.id : data.aws_ami.amazon_linux.id) : data.aws_ami.amazon_linux.id
   instance_type          = each.value.instance_type
   key_name               = aws_key_pair.ec2_key.key_name
   #monitoring             = true
   user_data              = each.value.user_data != "" ? file("${path.module}/${each.value.user_data}") : ""
   vpc_security_group_ids = ["${aws_security_group.web-sg.id}"]
 
+  # Set root_block_device only for master instance
+  root_block_device = each.key == "master" ? [{
+    volume_size           = 20
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }] : []
+
   tags = {
     Terraform   = "true"
     Environment = "${each.key}"
   }
+  
 }
 # here we are using the Null resource to copy our ssh key into the master server.
 resource "null_resource" "copy_ssh_key" {
@@ -78,25 +86,13 @@ resource "null_resource" "copy_ssh_key" {
   }
   provisioner "remote-exec" {
     inline = [
-      "#!/bin/bash",
-      #install amazon ansible-ec2 plugin
+      "sudo dnf update -y",
+      "sudo dnf install -y python3 python3-pip",
+      "python3 -m pip install --upgrade pip",
+      "sudo pip3 install ansible",
       "ansible-galaxy collection install amazon.aws",
-      # # install ansible with python3
-      "sudo yum update -y",
-      "sudo amazon-linux-extras install python3.8 -y",
-      "sudo pip3.8 install ansible",
-      # #install boto3 and botocore
-      "sudo pip3.8 install boto3 botocore awscli",
-      #change terminal color
-      "chmod 400 /home/ec2-user/${var.keypair-name}.pem",
-      "sudo sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config",
-      "sudo systemctl restart sshd",
-      "sudo useradd ansible",
-      "echo 'ansible:ansible' | sudo chpasswd",
-      "sudo cp /home/ec2-user/${var.keypair-name}.pem /home/ansible/${var.keypair-name}.pem",
-      "sudo chmod 400 /home/ansible/${var.keypair-name}.pem",
-      "sudo chown ansible:ansible /home/ansible/${var.keypair-name}.pem",
-       
+      "sudo pip3 install boto3 botocore awscli",
+      "echo \"PS1='\\e[1;32m\\u@\\h \\w$ \\e[m'\" >> /home/ec2-user/.bash_profile"
     ]
   }
 }
