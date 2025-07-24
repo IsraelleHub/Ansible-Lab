@@ -30,3 +30,14 @@ data "aws_ami" "amazon_linux2" {
     values = ["hvm"]
   }
 }
+
+# Windows Server AMI
+data "aws_ami" "windows_2022" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["Windows_Server-2022-English-Full-Base-*"]
+  }
+}

@@ -30,3 +30,7 @@ output "node2_ip" {
   
   description = "Ansible control node public and private IP"
 }
+
+output "user-to-connect" {
+  value = "username = ubuntu and password = ansible"
+}

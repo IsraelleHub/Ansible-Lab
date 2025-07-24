@@ -1,11 +1,11 @@
 variable "region" {
   type    = string
-  default = "us-east-2"
+  default = "us-east-1"
 }
 
 variable "AZ" {
   type = string
-  default = "us-east-2a"
+  default = "us-east-1a"
 }
 
 variable "VPC_cidr" {
@@ -27,7 +27,10 @@ variable "node-instance_type" {
   type    = string
   default = "t3.micro"
 }
-
+variable "master-instance_type" {
+  type    = string
+  default = "t2.medium"
+}
 variable "sg_name" {
   type        = string
   default     = "Ansible-sg"  # From your original
@@ -48,4 +51,24 @@ variable "ansible_password" {
 
 locals {
   ssh_user = "ubuntu"  # Or logic to detect based on AMI
+}
+
+# Windows Server Configuration
+
+variable "create_windows_server" {
+  description = "Whether to create the Windows instance"
+  type        = bool
+  default     = false
+}
+
+variable "windows_server_config" {
+  description = "Windows Server configuration"
+  type = object({
+    name          = string
+    instance_type = string
+  })
+  default = {
+    name          = "win2022-server"
+    instance_type = "t2.medium"
+  }
 }

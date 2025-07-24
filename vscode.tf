@@ -1,5 +1,5 @@
 resource "local_file" "ssh_config" {
-  filename = "${path.module}/ssh_config"
+  filename = "~/.ssh/ssh_config"
   content = <<-EOF
   Host AnsibleMaster
     HostName ${aws_instance.master.public_ip}
